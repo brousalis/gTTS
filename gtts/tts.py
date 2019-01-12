@@ -74,9 +74,11 @@ class gTTS:
     """
 
     GOOGLE_TTS_MAX_CHARS = 100  # Max characters the Google TTS API takes at a time
-    GOOGLE_TTS_URL = "https://translate.google.com/translate_tts"
+    # GOOGLE_TTS_URL = "https://translate.google.com/translate_tts"
+    GOOGLE_TTS_URL = "https://texttospeech.googleapis.com/v1/text:synthesize"
     GOOGLE_TTS_HEADERS = {
         "Referer": "http://translate.google.com/",
+        "Authorization": "Bearer: AIzaSyCLBPO0_IFfGjsLTJa2Zaj1hnP73-O0YUU",
         "User-Agent":
             "Mozilla/5.0 (Windows NT 10.0; WOW64) "
             "AppleWebKit/537.36 (KHTML, like Gecko) "
@@ -87,7 +89,7 @@ class gTTS:
             self,
             text,
             lang='en',
-            slow=False,
+            slow=Fale,
             lang_check=True,
             pre_processor_funcs=[
                 pre_processors.tone_marks,
@@ -193,15 +195,28 @@ class gTTS:
                     "Connection error during token calculation: %s" %
                     str(e))
 
-            payload = {'ie': 'UTF-8',
-                       'q': part,
-                       'tl': self.lang,
-                       'ttsspeed': self.speed,
-                       'total': len(text_parts),
-                       'idx': idx,
-                       'client': 'tw-ob',
-                       'textlen': _len(part),
-                       'tk': part_tk}
+            # payload = {'ie': 'UTF-8',
+            #            'q': part,
+            #            'tl': self.lang,
+            #            'ttsspeed': self.speed,
+            #            'total': len(text_parts),
+            #            'idx': idx,
+            #            'client': 'tw-ob',
+            #            'textlen': _len(part),
+            #            'tk': part_tk}
+            payload = {
+                'input': {
+                    'text': text_parts
+                },
+                'voice': {
+                    'languageCode': 'en-gb',
+                    'name': 'en-GB-Standard-A',
+                    'ssmlGender': 'FEMALE'
+                },
+                'audioConfig': {
+                    'audioEncoding': 'MP3'
+                }
+            }
 
             log.debug("payload-%i: %s", idx, payload)
 
